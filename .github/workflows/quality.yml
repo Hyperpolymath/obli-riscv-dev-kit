@@ -12,7 +12,7 @@ jobs:
           find . -type f -perm /111 -name "*.sh" | head -10 || true
       
       - name: Check for secrets
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@ddc015e5ed99942b2253d8ea16a0586a01ef2ab1 # v3.88.0
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -29,7 +29,7 @@ jobs:
           find . -type f -size +1M -not -path "./.git/*" | head -10 || echo "No large files"
       
       - name: EditorConfig check
-        uses: editorconfig-checker/action-editorconfig-checker@main
+        uses: editorconfig-checker/action-editorconfig-checker@0ab3427a3f09b17c21d489172245be511e0a16ea # v2.0.0
         continue-on-error: true
 
   docs:
