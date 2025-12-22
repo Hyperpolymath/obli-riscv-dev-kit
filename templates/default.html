@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Note G SSG">
+  <meta name="description" content="{{ site_description }}">
+  <title>{{ title }} - {{ site_name }}</title>
+
+  <!-- Accessibility meta -->
+  <meta name="accessibility-enhanced" content="true">
+  <meta name="sign-language-support" content="bsl,asl,gsl">
+
+  <style>
+    :root {
+      --text-color: #333;
+      --bg-color: #fff;
+      --link-color: #0066cc;
+      --a11y-border: #4a90d9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text-color: #e0e0e0;
+        --bg-color: #1a1a1a;
+        --link-color: #66b3ff;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background: var(--bg-color);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    a {
+      color: var(--link-color);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 999;
+      padding: 0.5em 1em;
+      background: #000;
+      color: #fff;
+    }
+
+    .skip-link:focus {
+      left: 0;
+    }
+
+    /* Accessibility content markers */
+    .a11y-bsl,
+    .a11y-asl,
+    .a11y-gsl,
+    .a11y-makaton {
+      border-left: 4px solid var(--a11y-border);
+      padding-left: 1em;
+      margin: 1em 0;
+      background: rgba(74, 144, 217, 0.1);
+    }
+
+    .a11y-bsl::before { content: '[BSL] '; font-weight: bold; color: var(--a11y-border); }
+    .a11y-asl::before { content: '[ASL] '; font-weight: bold; color: var(--a11y-border); }
+    .a11y-gsl::before { content: '[DGS] '; font-weight: bold; color: var(--a11y-border); }
+    .a11y-makaton::before { content: '[Makaton] '; font-weight: bold; color: var(--a11y-border); }
+
+    /* Accessibility options panel */
+    .a11y-options {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--bg-color);
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 0.5rem;
+    }
+
+    .a11y-options summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .features {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature {
+      padding: 0.5em 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .feature::before {
+      content: '✓ ';
+      color: green;
+    }
+
+    header {
+      border-bottom: 1px solid #eee;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    code {
+      background: #f4f4f4;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+    }
+
+    pre {
+      background: #f4f4f4;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <details class="a11y-options">
+    <summary>Accessibility</summary>
+    <ul>
+      <li><a href="#a11y-bsl">BSL Version</a></li>
+      <li><a href="#a11y-asl">ASL Version</a></li>
+      <li><a href="#a11y-makaton">Makaton Version</a></li>
+    </ul>
+  </details>
+
+  <header>
+    <nav aria-label="Main navigation">
+      <a href="{{ base_url }}">Home</a> |
+      <a href="{{ base_url }}docs/">Documentation</a> |
+      <a href="{{ base_url }}examples/">Examples</a>
+    </nav>
+  </header>
+
+  <main id="main-content" role="main">
+    <article>
+      <h1>{{ title }}</h1>
+      {{ content }}
+    </article>
+  </main>
+
+  <footer>
+    <p>
+      Built with <a href="https://github.com/hyperpolymath/obli-riscv-dev-kit">Note G</a> |
+      <a href="{{ base_url }}accessibility/">Accessibility Statement</a>
+    </p>
+    <p>
+      <small>© 2025 {{ site_name }}. Licensed under AGPL-3.0-or-later.</small>
+    </p>
+  </footer>
+</body>
+</html>

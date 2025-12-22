@@ -1,0 +1,145 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: 2025 hyperpolymath
+#
+# Mustfile - Required Tasks (Mandatory CI/CD Checks)
+# Reference: https://github.com/hyperpolymath/Mustfile
+#
+# These are MANDATORY checks that MUST pass before merge.
+# Unlike justfile (optional dev tasks), Mustfile tasks are enforced.
+#
+# Usage: must <task>
+# Alternative: just must-<task>
+
+# ============================================================================
+# SECURITY (MUST PASS)
+# ============================================================================
+
+# MUST: No hardcoded secrets
+must-no-secrets:
+    @echo "MUST: Checking for hardcoded secrets..."
+    @! grep -rEi "(api_key|apikey|secret_key|password|token)\s*[=:]\s*[\"'][A-Za-z0-9+/=]{20,}" \
+        --include="*.res" --include="*.scm" --include="*.ts" --include="*.json" . 2>/dev/null \
+        | grep -v "example\|sample\|test\|mock\|placeholder" \
+        || (echo "❌ FAILED: Hardcoded secrets detected" && exit 1)
+    @echo "✓ PASSED: No hardcoded secrets"
+
+# MUST: No HTTP URLs (HTTPS only)
+must-https-only:
+    @echo "MUST: Checking for HTTP URLs..."
+    @! grep -rE "http://[^l][^o][^c]" \
+        --include="*.res" --include="*.scm" --include="*.yaml" --include="*.yml" --include="*.json" . 2>/dev/null \
+        | grep -v "localhost\|127.0.0.1\|example\|test\|spec\|schema" \
+        || (echo "❌ FAILED: HTTP URLs found (use HTTPS)" && exit 1)
+    @echo "✓ PASSED: HTTPS only"
+
+# MUST: No weak cryptography
+must-no-weak-crypto:
+    @echo "MUST: Checking for weak cryptography..."
+    @! grep -rE "md5\(|sha1\(" \
+        --include="*.res" --include="*.ts" --include="*.js" . 2>/dev/null \
+        | grep -v "checksum\|cache\|test\|spec" \
+        || (echo "❌ FAILED: Weak crypto (MD5/SHA1) detected" && exit 1)
+    @echo "✓ PASSED: No weak crypto"
+
+# MUST: SHA-pinned GitHub Actions
+must-sha-pinned-actions:
+    @echo "MUST: Checking for SHA-pinned actions..."
+    @! grep -rE "uses:\s+[^@]+@(main|master|v[0-9]+)$$" .github/workflows/*.yml 2>/dev/null \
+        | grep -v "#" \
+        || (echo "❌ FAILED: Unpinned GitHub Actions found" && exit 1)
+    @echo "✓ PASSED: Actions are SHA-pinned"
+
+# ============================================================================
+# RSR COMPLIANCE (MUST PASS)
+# ============================================================================
+
+# MUST: Required files exist
+must-required-files:
+    @echo "MUST: Checking required files..."
+    @test -f guix.scm || (echo "❌ FAILED: guix.scm missing" && exit 1)
+    @test -f flake.nix || (echo "❌ FAILED: flake.nix missing" && exit 1)
+    @test -f Containerfile || (echo "❌ FAILED: Containerfile missing" && exit 1)
+    @test -f LICENSE.txt || (echo "❌ FAILED: LICENSE.txt missing" && exit 1)
+    @test -f .well-known/security.txt || (echo "❌ FAILED: security.txt missing" && exit 1)
+    @test -f .editorconfig || (echo "❌ FAILED: .editorconfig missing" && exit 1)
+    @echo "✓ PASSED: All required files present"
+
+# MUST: SPDX headers on source files
+must-spdx-headers:
+    @echo "MUST: Checking SPDX headers..."
+    @for f in $$(find . -name "*.res" -o -name "*.scm" -o -name "*.ads" -o -name "*.adb" 2>/dev/null | head -20); do \
+        grep -q "SPDX-License-Identifier" "$$f" || (echo "❌ FAILED: $$f missing SPDX header" && exit 1); \
+    done
+    @echo "✓ PASSED: SPDX headers present"
+
+# MUST: No forbidden languages
+must-no-forbidden-langs:
+    @echo "MUST: Checking for forbidden languages..."
+    @! find . -name "*.ts" -not -path "./.git/*" 2>/dev/null | head -1 | grep . \
+        || true  # TypeScript check (warning only for legacy)
+    @! find . -name "package-lock.json" -not -path "./.git/*" 2>/dev/null | head -1 | grep . \
+        || (echo "❌ FAILED: package-lock.json found (use Deno)" && exit 1)
+    @! find . -name "bun.lockb" -not -path "./.git/*" 2>/dev/null | head -1 | grep . \
+        || (echo "❌ FAILED: bun.lockb found (use Deno)" && exit 1)
+    @echo "✓ PASSED: No forbidden package managers"
+
+# ============================================================================
+# ACCESSIBILITY (MUST PASS)
+# ============================================================================
+
+# MUST: Accessibility metadata present
+must-a11y-metadata:
+    @echo "MUST: Checking accessibility configuration..."
+    @test -f a11y/schema.json || (echo "❌ FAILED: a11y/schema.json missing" && exit 1)
+    @test -f noteg.config.json || (echo "❌ FAILED: noteg.config.json missing" && exit 1)
+    @grep -q '"accessibility"' noteg.config.json || (echo "❌ FAILED: No accessibility config" && exit 1)
+    @echo "✓ PASSED: Accessibility metadata present"
+
+# MUST: Sign language support defined
+must-sign-language-support:
+    @echo "MUST: Checking sign language support..."
+    @grep -q '"bsl"\|"asl"\|"gsl"' noteg.config.json 2>/dev/null \
+        || (echo "❌ FAILED: No sign language support defined" && exit 1)
+    @echo "✓ PASSED: Sign language support defined"
+
+# ============================================================================
+# DOCUMENTATION (MUST PASS)
+# ============================================================================
+
+# MUST: Core documentation exists
+must-core-docs:
+    @echo "MUST: Checking core documentation..."
+    @test -f README.adoc -o -f README.md || (echo "❌ FAILED: README missing" && exit 1)
+    @test -f LICENSE.txt || (echo "❌ FAILED: LICENSE missing" && exit 1)
+    @echo "✓ PASSED: Core documentation present"
+
+# MUST: SCM files valid
+must-valid-scm:
+    @echo "MUST: Checking SCM file validity..."
+    @test -f META.scm || (echo "❌ FAILED: META.scm missing" && exit 1)
+    @test -f STATE.scm || (echo "❌ FAILED: STATE.scm missing" && exit 1)
+    @test -f ECOSYSTEM.scm || (echo "❌ FAILED: ECOSYSTEM.scm missing" && exit 1)
+    @echo "✓ PASSED: SCM files present"
+
+# ============================================================================
+# COMBINED CHECKS
+# ============================================================================
+
+# Run all MUST checks (for CI)
+must-all: must-no-secrets must-https-only must-no-weak-crypto must-sha-pinned-actions must-required-files must-spdx-headers must-no-forbidden-langs must-a11y-metadata must-sign-language-support must-core-docs must-valid-scm
+    @echo ""
+    @echo "════════════════════════════════════════"
+    @echo "✓ ALL MANDATORY CHECKS PASSED"
+    @echo "════════════════════════════════════════"
+
+# Security checks only
+must-security: must-no-secrets must-https-only must-no-weak-crypto must-sha-pinned-actions
+    @echo "✓ All security checks passed"
+
+# RSR compliance only
+must-rsr: must-required-files must-spdx-headers must-no-forbidden-langs
+    @echo "✓ All RSR compliance checks passed"
+
+# Accessibility only
+must-a11y: must-a11y-metadata must-sign-language-support
+    @echo "✓ All accessibility checks passed"

@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyperpolymath.org/schemas/noteg-a11y-v1.json",
+  "title": "Note G Accessibility Schema",
+  "description": "Schema for Note G language accessibility metadata including sign languages and Makaton",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Schema version (semver)"
+    },
+    "content": {
+      "$ref": "#/$defs/contentAccessibility"
+    },
+    "site": {
+      "$ref": "#/$defs/siteAccessibility"
+    }
+  },
+  "required": ["version"],
+  "$defs": {
+    "contentAccessibility": {
+      "type": "object",
+      "description": "Accessibility metadata for a single content item",
+      "properties": {
+        "bsl": { "$ref": "#/$defs/signLanguageContent" },
+        "asl": { "$ref": "#/$defs/signLanguageContent" },
+        "gsl": { "$ref": "#/$defs/signLanguageContent" },
+        "auslan": { "$ref": "#/$defs/signLanguageContent" },
+        "lsf": { "$ref": "#/$defs/signLanguageContent" },
+        "jsl": { "$ref": "#/$defs/signLanguageContent" },
+        "makaton": { "$ref": "#/$defs/makatonContent" },
+        "altText": {
+          "type": "string",
+          "description": "Alternative text description"
+        },
+        "longDesc": {
+          "type": "string",
+          "description": "Extended description for complex content"
+        },
+        "audioDescription": {
+          "$ref": "#/$defs/audioDescription"
+        },
+        "cognitiveSupport": {
+          "$ref": "#/$defs/cognitiveSupport"
+        }
+      }
+    },
+    "signLanguageContent": {
+      "type": "object",
+      "description": "Sign language accessibility content",
+      "properties": {
+        "videoUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to sign language interpretation video"
+        },
+        "transcript": {
+          "type": "string",
+          "description": "Written transcript of the signed content"
+        },
+        "glosses": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sign language glosses (written representation of signs)"
+        },
+        "interpreter": {
+          "type": "string",
+          "description": "Name or ID of the interpreter"
+        },
+        "dialect": {
+          "type": "string",
+          "description": "Regional dialect or variation"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Duration of video in seconds"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to video thumbnail image"
+        },
+        "captioned": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the video includes captions"
+        }
+      }
+    },
+    "makatonContent": {
+      "type": "object",
+      "description": "Makaton symbol and sign content",
+      "properties": {
+        "symbols": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/makatonSymbol" },
+          "description": "Array of Makaton symbols"
+        },
+        "sequence": {
+          "type": "string",
+          "description": "Symbol sequence representation"
+        },
+        "audioUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to spoken audio support"
+        },
+        "videoUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to Makaton signing video"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["core", "additional", "resource"],
+          "description": "Makaton vocabulary level"
+        }
+      }
+    },
+    "makatonSymbol": {
+      "type": "object",
+      "description": "Individual Makaton symbol",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique symbol identifier"
+        },
+        "meaning": {
+          "type": "string",
+          "description": "English meaning of the symbol"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to symbol image"
+        },
+        "category": {
+          "type": "string",
+          "description": "Symbol category (e.g., 'actions', 'objects', 'people')"
+        },
+        "alternativeSymbols": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Alternative symbol representations"
+        }
+      },
+      "required": ["id", "meaning"]
+    },
+    "audioDescription": {
+      "type": "object",
+      "description": "Audio description for visual content",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to audio description file"
+        },
+        "transcript": {
+          "type": "string",
+          "description": "Text transcript of audio description"
+        },
+        "extended": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this is an extended audio description"
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$",
+          "description": "Language code (e.g., 'en', 'en-GB')"
+        }
+      }
+    },
+    "cognitiveSupport": {
+      "type": "object",
+      "description": "Cognitive accessibility support",
+      "properties": {
+        "easyRead": {
+          "type": "string",
+          "description": "Easy-read version of content"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Plain language summary"
+        },
+        "keyPoints": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key points in simple language"
+        },
+        "readingLevel": {
+          "type": "string",
+          "enum": ["basic", "intermediate", "advanced"],
+          "description": "Reading complexity level"
+        },
+        "visualAids": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
+              "description": { "type": "string" }
+            }
+          },
+          "description": "Supporting visual aids"
+        }
+      }
+    },
+    "siteAccessibility": {
+      "type": "object",
+      "description": "Site-wide accessibility configuration",
+      "properties": {
+        "defaultLanguage": {
+          "type": "string",
+          "enum": ["bsl", "asl", "gsl", "auslan", "lsf", "jsl"],
+          "default": "bsl",
+          "description": "Default sign language"
+        },
+        "supportedLanguages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["bsl", "asl", "gsl", "auslan", "lsf", "jsl"]
+          },
+          "description": "Supported sign languages"
+        },
+        "makatonEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether Makaton support is enabled"
+        },
+        "generateAltFormats": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-generate alternative format versions"
+        },
+        "wcagLevel": {
+          "type": "string",
+          "enum": ["A", "AA", "AAA"],
+          "default": "AA",
+          "description": "Target WCAG conformance level"
+        },
+        "interpreterCredits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "language": { "type": "string" },
+              "organization": { "type": "string" },
+              "url": { "type": "string", "format": "uri" }
+            }
+          },
+          "description": "Credits for sign language interpreters"
+        }
+      }
+    }
+  }
+}

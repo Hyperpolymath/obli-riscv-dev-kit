@@ -1,0 +1,72 @@
+{
+  "name": "noteg-vscode",
+  "displayName": "Note G Language",
+  "description": "Accessibility-first templating language support for VS Code",
+  "version": "0.1.0",
+  "publisher": "hyperpolymath",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperpolymath/obli-riscv-dev-kit"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Snippets"
+  ],
+  "keywords": [
+    "noteg",
+    "accessibility",
+    "a11y",
+    "bsl",
+    "asl",
+    "sign-language"
+  ],
+  "activationEvents": [
+    "onLanguage:noteg"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "noteg",
+        "aliases": ["Note G", "noteg"],
+        "extensions": [".noteg", ".ng"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "noteg",
+        "scopeName": "source.noteg",
+        "path": "./syntaxes/noteg.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "noteg",
+        "path": "./snippets/noteg.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Note G",
+      "properties": {
+        "noteg.lsp.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the Note G Language Server"
+        },
+        "noteg.accessibility.defaultLanguage": {
+          "type": "string",
+          "enum": ["bsl", "asl", "gsl", "makaton"],
+          "default": "bsl",
+          "description": "Default sign language for accessibility features"
+        }
+      }
+    }
+  }
+}

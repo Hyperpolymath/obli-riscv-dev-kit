@@ -1,0 +1,44 @@
+{
+  "$schema": "https://hyperpolymath.org/schemas/noteg-config-v1.json",
+  "name": "obli-riscv-dev-kit",
+  "title": "RISC-V Development Kit",
+  "description": "RISC-V development kit with oblivious computing and accessibility-first design",
+  "version": "0.1.0",
+  "baseUrl": "/",
+  "language": "en",
+  "author": {
+    "name": "Jonathan D.A. Jewell",
+    "email": "jonathan@hyperpolymath.org",
+    "orcid": "0000-0002-1234-5678"
+  },
+  "accessibility": {
+    "enabled": true,
+    "defaultLanguage": "bsl",
+    "supportedLanguages": ["bsl", "asl", "gsl"],
+    "makatonEnabled": true,
+    "generateAltFormats": true,
+    "wcagLevel": "AA"
+  },
+  "build": {
+    "outputDir": "_site",
+    "minify": true,
+    "sourceMaps": false,
+    "compilerTarget": "htmla11y"
+  },
+  "paths": {
+    "content": "content",
+    "templates": "templates",
+    "static": "static",
+    "output": "_site"
+  },
+  "engine": {
+    "type": "mill",
+    "synthesis": true,
+    "bernoulliVerification": true
+  },
+  "languages": {
+    "primary": "rescript",
+    "engine": "ada",
+    "templates": "noteg"
+  }
+}

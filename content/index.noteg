@@ -1,0 +1,72 @@
+---
+title: Welcome to Note G
+date: 2025-12-17
+author: hyperpolymath
+layout: default
+tags: [welcome, accessibility, documentation]
+accessibility:
+  bsl:
+    videoUrl: https://example.com/videos/welcome-bsl.mp4
+    transcript: "Welcome to Note G, an accessibility-first language"
+---
+
+# Welcome to Note G
+
+{{ site_title }} is an accessibility-first templating language designed for
+creating inclusive web content.
+
+## Features
+
+component FeatureList(items) {
+  for item in items {
+    <li class="feature">{{ item | escape_html }}</li>
+  }
+}
+
+let features = [
+  "British Sign Language (BSL) support",
+  "American Sign Language (ASL) support",
+  "German Sign Language (DGS) support",
+  "Makaton symbol integration",
+  "WCAG 2.1 AA compliance",
+  "Mill-based template synthesis"
+]
+
+<ul class="features">
+  FeatureList(features)
+</ul>
+
+## Accessibility First
+
+accessibility bsl {
+  videoUrl: "https://example.com/bsl/intro.mp4",
+  transcript: "Note G puts accessibility at the heart of web development",
+  glosses: ["WELCOME", "LANGUAGE", "ACCESS", "WEB"]
+}
+
+Every piece of content in Note G can be annotated with sign language
+translations, Makaton symbols, and alternative text formats.
+
+## Getting Started
+
+```noteg
+let greeting = "Hello, World!"
+
+accessibility bsl {
+  glosses: ["HELLO", "WORLD"]
+}
+
+{{ greeting | upper }}
+```
+
+## Template Syntax
+
+The template syntax uses double curly braces for variable interpolation:
+
+- `{{ variable }}` - Simple variable
+- `{{ value | filter }}` - Apply a filter
+- `{{ name | escape_html }}` - HTML escape
+
+## Learn More
+
+Visit our [documentation]({{ base_url }}docs/) to learn more about Note G.
