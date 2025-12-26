@@ -1,1 +1,100 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
 
+= obli-riscv-dev-kit
+:toc:
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+== Status
+
+[IMPORTANT]
+====
+**Project Specification** — Implementation pending.
+
+This repository contains project infrastructure and policy enforcement but no substantive code or design materials have been uploaded yet.
+====
+
+== Overview
+
+`obli-riscv-dev-kit` is a development kit for RISC-V architecture projects, built according to the Hyperpolymath Standard language policy.
+
+=== Technology Stack (Planned)
+
+[cols="1,2"]
+|===
+| Category | Technology
+
+| Systems/Performance
+| Rust, WASM
+
+| Application Code
+| ReScript
+
+| Runtime
+| Deno
+
+| Package Management
+| Guix (primary), Nix (fallback)
+
+| Configuration
+| Nickel
+
+| State/Meta
+| Guile Scheme
+|===
+
+== Repository Contents
+
+=== Current State
+
+* ✅ Repository infrastructure (CI/CD, issue templates, editor config)
+* ✅ Policy enforcement workflows (RSR anti-pattern, security, Guix/Nix)
+* ✅ Dual license (MIT OR AGPL-3.0-or-later)
+* ✅ Citation infrastructure
+* ⏳ Core implementation — _pending_
+* ⏳ Documentation — _pending_
+* ⏳ Design specifications — _pending_
+
+=== Policy Enforcement
+
+This repository enforces the Hyperpolymath Standard via CI:
+
+[horizontal]
+Allowed:: ReScript, Deno, Rust, WASM, OCaml, Haskell, Guile/Scheme, Ada, Gleam, Julia
+Blocked:: TypeScript, Go, npm/yarn/bun, Python (except SaltStack)
+
+== Getting Started
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/obli-riscv-dev-kit.git
+cd obli-riscv-dev-kit
+
+# View available tasks
+just
+----
+
+== License
+
+Dual-licensed under your choice of:
+
+* link:https://opensource.org/licenses/MIT[MIT License]
+* link:https://www.gnu.org/licenses/agpl-3.0.html[AGPL-3.0-or-later]
+
+See link:LICENSE.txt[LICENSE.txt] for full terms.
+
+== Citation
+
+See link:docs/CITATIONS.adoc[docs/CITATIONS.adoc] for citation formats (BibTeX, Harvard, APA, MLA, OSCOLA).
+
+== Contributing
+
+Contributions welcome. Please ensure all code adheres to the language policy defined in link:.claude/CLAUDE.md[CLAUDE.md].
+
+== See Also
+
+* link:ROADMAP.adoc[Project Roadmap]
+* link:.claude/CLAUDE.md[Language Policy]

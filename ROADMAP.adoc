@@ -1,0 +1,100 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= obli-riscv-dev-kit — Project Roadmap
+:toc:
+:toclevels: 2
+:icons: font
+
+== Current Status
+
+[cols="1,1,3"]
+|===
+| Phase | Status | Description
+
+| Infrastructure
+| ✅ Complete
+| Repository scaffolding, CI/CD, policy enforcement
+
+| Specification
+| ⏳ Pending
+| Design documents, architecture, API specifications
+
+| Implementation
+| ⏳ Pending
+| Core development kit functionality
+
+| Documentation
+| ⏳ Pending
+| User guides, API reference, tutorials
+|===
+
+== Phase 1: Infrastructure ✅
+
+*Status: Complete*
+
+=== Completed Items
+
+* [x] Repository creation and initial structure
+* [x] Dual licensing (MIT OR AGPL-3.0-or-later)
+* [x] GitHub workflows:
+** RSR anti-pattern enforcement
+** Guix/Nix package policy
+** Security policy checks
+** CodeQL analysis
+** npm/bun blocker
+** Multi-forge mirroring
+* [x] Issue templates (bug, feature, question, documentation)
+* [x] Editor configuration (.editorconfig, .gitattributes)
+* [x] Citation infrastructure
+* [x] Justfile task runner scaffold
+
+== Phase 2: Specification
+
+*Status: Pending*
+
+=== Planned Items
+
+* [ ] Architecture design document
+* [ ] RISC-V target specification
+* [ ] API design and interface definitions
+* [ ] Build system specification (Guix/Nix)
+* [ ] Development environment setup guide
+* [ ] Contribution guidelines
+
+== Phase 3: Implementation
+
+*Status: Pending*
+
+=== Planned Items
+
+* [ ] Core library implementation (Rust)
+* [ ] ReScript bindings/interfaces
+* [ ] WASM compilation targets
+* [ ] Deno runtime integration
+* [ ] Guix package definition (guix.scm)
+* [ ] Nix flake fallback (flake.nix)
+* [ ] Build, test, lint, format task implementations
+
+== Phase 4: Documentation
+
+*Status: Pending*
+
+=== Planned Items
+
+* [ ] User documentation
+* [ ] API reference
+* [ ] Getting started guide
+* [ ] Examples and tutorials
+* [ ] Architecture overview
+
+== Timeline
+
+[NOTE]
+====
+No fixed timeline. Milestones will be updated as specification materials are uploaded and development begins.
+====
+
+== Contributing
+
+See link:README.adoc[README] for contribution guidelines and language policy requirements.
