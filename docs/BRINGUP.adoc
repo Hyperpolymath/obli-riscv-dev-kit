@@ -1,0 +1,307 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= RISC-V Board Bring-Up Checklist
+:toc:
+:toclevels: 2
+:icons: font
+:source-highlighter: rouge
+
+== Overview
+
+This is a minimal bring-up checklist for new RISC-V boards. Complete each section in order. A board is considered "brought up" when all items are checked.
+
+== Prerequisites Checklist
+
+=== Development Host
+
+* [ ] Linux host (x86_64 or aarch64)
+* [ ] Guix or Nix package manager installed
+* [ ] `just` command runner installed
+* [ ] USB access permissions configured (`udev` rules)
+
+=== Toolchain
+
+* [ ] RISC-V GNU Toolchain installed
+** `riscv64-unknown-elf-gcc --version`
+* [ ] OpenOCD with RISC-V support
+** `openocd --version`
+* [ ] QEMU RISC-V emulator
+** `qemu-system-riscv32 --version`
+* [ ] Rust with RISC-V targets
+** `rustup target list | grep riscv`
+
+=== Hardware
+
+* [ ] Target board acquired
+* [ ] JTAG/SWD debugger (e.g., J-Link, FTDI-based)
+* [ ] USB cables (power + debug)
+* [ ] Serial adapter (if UART not on debug probe)
+
+== Stage 1: Toolchain Verification
+
+[TIP]
+====
+Verify toolchain works before touching hardware.
+====
+
+=== 1.1 Compile Test
+
+[source,bash]
+----
+# Create minimal test
+cat > /tmp/test.c << 'EOF'
+int main(void) { return 0; }
+EOF
+
+# Cross-compile
+riscv64-unknown-elf-gcc -march=rv32imac -mabi=ilp32 \
+    -nostdlib -e main -o /tmp/test.elf /tmp/test.c
+
+# Verify ELF
+file /tmp/test.elf
+# Expected: ELF 32-bit LSB executable, UCB RISC-V
+----
+
+* [ ] Cross-compilation succeeds
+* [ ] ELF file is valid RISC-V binary
+
+=== 1.2 QEMU Test
+
+[source,bash]
+----
+# Run minimal binary in QEMU
+qemu-system-riscv32 -machine virt -nographic \
+    -kernel /tmp/test.elf -serial mon:stdio \
+    -semihosting-config enable=on,target=native &
+sleep 1; kill %1
+----
+
+* [ ] QEMU starts without errors
+* [ ] Binary executes (even if it does nothing)
+
+== Stage 2: Hardware Connection
+
+=== 2.1 Physical Setup
+
+* [ ] Board powered via USB or external supply
+* [ ] Power LED illuminated (if present)
+* [ ] JTAG/SWD debugger connected
+* [ ] Debug probe recognized by host
+** `lsusb | grep -i <debugger-vendor>`
+
+=== 2.2 OpenOCD Connection
+
+[source,bash]
+----
+# Test OpenOCD connection (adjust config for your board/debugger)
+openocd -f interface/ftdi/olimex-arm-usb-ocd-h.cfg \
+        -f target/gd32vf103.cfg
+----
+
+* [ ] OpenOCD connects to target
+* [ ] Target IDCODE reported correctly
+* [ ] No "target not halted" errors
+
+=== 2.3 GDB Connection
+
+[source,bash]
+----
+# In another terminal while OpenOCD runs
+riscv64-unknown-elf-gdb -ex "target remote :3333" -ex "monitor reset halt"
+----
+
+* [ ] GDB connects to OpenOCD
+* [ ] Target halts on command
+* [ ] Can read registers (`info registers`)
+
+== Stage 3: Minimal Firmware
+
+=== 3.1 LED Blink (GPIO Test)
+
+Create minimal blink firmware to verify:
+
+* [ ] Linker script matches board memory map
+* [ ] Startup code initializes correctly
+* [ ] GPIO peripheral accessible
+* [ ] Clock configuration correct
+* [ ] LED toggles at expected rate
+
+=== 3.2 UART Hello World
+
+* [ ] UART peripheral initialized
+* [ ] Baud rate configured correctly
+* [ ] "Hello, RISC-V!" prints to serial console
+* [ ] No garbled characters (clock/baud mismatch)
+
+[source,bash]
+----
+# Monitor serial output
+screen /dev/ttyUSB0 115200
+# or
+picocom -b 115200 /dev/ttyUSB0
+----
+
+=== 3.3 Timer Interrupt
+
+* [ ] Timer peripheral configured
+* [ ] Interrupt handler registered
+* [ ] ISR executes at expected interval
+* [ ] No crashes or hangs
+
+== Stage 4: Flash Programming
+
+=== 4.1 Flash Identification
+
+[source,bash]
+----
+# Via OpenOCD
+openocd -f <board.cfg> -c "init; flash info 0; exit"
+----
+
+* [ ] Flash device detected
+* [ ] Size matches datasheet
+* [ ] Sector size reported correctly
+
+=== 4.2 Program and Verify
+
+[source,bash]
+----
+# Flash firmware
+openocd -f <board.cfg> \
+    -c "program firmware.elf verify reset exit"
+----
+
+* [ ] Flash erase succeeds
+* [ ] Programming completes
+* [ ] Verification passes
+* [ ] Board runs after reset
+
+=== 4.3 Persistent Boot
+
+* [ ] Power cycle board
+* [ ] Firmware runs from flash without debugger
+* [ ] Behavior matches debugger-loaded version
+
+== Stage 5: HAL Integration
+
+=== 5.1 Runtime
+
+* [ ] `obli-riscv-rt` crate compiles for target
+* [ ] Vector table properly placed
+* [ ] `_start` entry point works
+* [ ] Stack initialized correctly
+* [ ] `.bss` zeroed, `.data` copied
+
+=== 5.2 Peripheral Access
+
+* [ ] PAC generated from SVD (if available)
+* [ ] Register addresses match datasheet
+* [ ] Read/write operations work
+* [ ] No bus faults on peripheral access
+
+=== 5.3 HAL Drivers
+
+Test each peripheral driver:
+
+* [ ] GPIO (input/output/alternate)
+* [ ] UART (TX/RX)
+* [ ] Timer (delay/PWM)
+* [ ] SPI (if present)
+* [ ] I2C (if present)
+* [ ] DMA (if present)
+
+== Stage 6: Board Support Package
+
+=== 6.1 BSP Files Created
+
+* [ ] `boards/<board>/mod.rs` — Board module
+* [ ] `boards/<board>/memory.x` — Linker script
+* [ ] `boards/<board>/openocd.cfg` — Debug config
+* [ ] `boards/<board>/README.adoc` — Board documentation
+
+=== 6.2 BSP Validation
+
+* [ ] All examples compile
+* [ ] All examples run on hardware
+* [ ] Documentation accurate
+* [ ] Pinout/peripheral mapping documented
+
+== Stage 7: CI Integration
+
+* [ ] Board added to build matrix
+* [ ] QEMU tests pass in CI (if applicable)
+* [ ] Flash script works from clean clone
+* [ ] Documentation builds
+
+== Bring-Up Complete Criteria
+
+A board is fully brought up when:
+
+[horizontal]
+Toolchain:: Compiles and links for target architecture
+Connection:: OpenOCD + GDB workflow functional
+Minimal Code:: LED blink + UART + timer working
+Flash:: Can program, verify, and boot from flash
+HAL:: Core peripherals have working drivers
+BSP:: Board-specific package complete and documented
+CI:: Automated builds and tests pass
+
+== Quick Reference Commands
+
+[source,bash]
+----
+# Build firmware
+just build
+
+# Flash to board
+just flash
+
+# Start debug session
+just debug
+
+# Monitor serial output
+just serial
+
+# Run smoke test
+just smoke-test
+
+# Clean build artifacts
+just clean
+----
+
+== Troubleshooting
+
+=== OpenOCD Won't Connect
+
+1. Check USB permissions (`sudo` test)
+2. Verify correct interface config file
+3. Confirm JTAG wiring (TDI/TDO/TCK/TMS/GND)
+4. Try lower JTAG speed (`adapter speed 100`)
+
+=== Garbled Serial Output
+
+1. Verify baud rate matches both sides
+2. Check system clock configuration
+3. Confirm TX/RX not swapped
+4. Try different UART pins if available
+
+=== Flash Programming Fails
+
+1. Ensure target halted before flash ops
+2. Check flash unlock sequence required
+3. Verify flash base address in linker script
+4. Try erasing entire flash first
+
+=== Program Crashes After Reset
+
+1. Check vector table placement
+2. Verify stack pointer initialization
+3. Confirm `.data`/`.bss` initialization
+4. Look for unhandled interrupts
+
+== See Also
+
+* link:../DELIVERABLES.adoc[Deliverables Definition]
+* link:getting-started.adoc[Getting Started Guide]
+* link:troubleshooting.adoc[Troubleshooting Guide]

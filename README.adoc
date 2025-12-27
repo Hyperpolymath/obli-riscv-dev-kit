@@ -97,4 +97,6 @@ Contributions welcome. Please ensure all code adheres to the language policy def
 == See Also
 
 * link:ROADMAP.adoc[Project Roadmap]
+* link:DELIVERABLES.adoc[Deliverables Definition]
+* link:docs/BRINGUP.adoc[Board Bring-Up Checklist]
 * link:.claude/CLAUDE.md[Language Policy]

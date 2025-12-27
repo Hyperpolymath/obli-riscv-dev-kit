@@ -1,0 +1,496 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= obli-riscv-dev-kit — Deliverables Definition
+:toc:
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+== Overview
+
+This document defines the complete set of deliverables for the obli-riscv-dev-kit project. Each deliverable category includes acceptance criteria and dependencies.
+
+== 1. Scripts & Automation
+
+=== 1.1 Build Scripts
+
+[cols="2,3,1"]
+|===
+| Script | Purpose | Priority
+
+| `scripts/build.sh`
+| Main build orchestrator (Rust + ReScript + WASM)
+| P0
+
+| `scripts/toolchain-setup.sh`
+| Download and configure RISC-V GNU toolchain
+| P0
+
+| `scripts/cross-compile.sh`
+| Cross-compilation wrapper for target architectures
+| P1
+
+| `scripts/wasm-build.sh`
+| WASM compilation pipeline
+| P2
+|===
+
+=== 1.2 Flash & Debug Scripts
+
+[cols="2,3,1"]
+|===
+| Script | Purpose | Priority
+
+| `scripts/flash.sh`
+| Flash firmware to target board via OpenOCD/JTAG
+| P0
+
+| `scripts/debug.sh`
+| Launch GDB with RISC-V target configuration
+| P0
+
+| `scripts/serial-monitor.sh`
+| UART serial console monitor
+| P1
+
+| `scripts/reset-board.sh`
+| Hardware reset via JTAG/SWD
+| P2
+|===
+
+=== 1.3 Test & Validation Scripts
+
+[cols="2,3,1"]
+|===
+| Script | Purpose | Priority
+
+| `scripts/test-unit.sh`
+| Run unit tests (host-side)
+| P0
+
+| `scripts/test-integration.sh`
+| Run integration tests on emulator/hardware
+| P1
+
+| `scripts/test-hardware.sh`
+| Hardware-in-loop testing
+| P2
+
+| `scripts/smoke-test.sh`
+| Quick sanity check for board bring-up
+| P0
+|===
+
+=== 1.4 Development Utilities
+
+[cols="2,3,1"]
+|===
+| Script | Purpose | Priority
+
+| `scripts/fmt.sh`
+| Format all source files (rustfmt, rescript format)
+| P1
+
+| `scripts/lint.sh`
+| Lint all source files (clippy, rescript lint)
+| P1
+
+| `scripts/clean.sh`
+| Clean build artifacts
+| P1
+
+| `scripts/deps-check.sh`
+| Verify all dependencies are available
+| P0
+|===
+
+== 2. Documentation
+
+=== 2.1 User Documentation
+
+[cols="2,3,1"]
+|===
+| Document | Purpose | Priority
+
+| `docs/getting-started.adoc`
+| Quick start guide for new users
+| P0
+
+| `docs/installation.adoc`
+| Detailed installation instructions
+| P0
+
+| `docs/user-guide.adoc`
+| Comprehensive user manual
+| P1
+
+| `docs/troubleshooting.adoc`
+| Common issues and solutions
+| P1
+|===
+
+=== 2.2 Technical Documentation
+
+[cols="2,3,1"]
+|===
+| Document | Purpose | Priority
+
+| `docs/architecture.adoc`
+| System architecture and design decisions
+| P0
+
+| `docs/api-reference.adoc`
+| API documentation for all public interfaces
+| P1
+
+| `docs/memory-map.adoc`
+| RISC-V memory layout and peripheral mappings
+| P0
+
+| `docs/register-reference.adoc`
+| CSR and peripheral register documentation
+| P1
+|===
+
+=== 2.3 Development Documentation
+
+[cols="2,3,1"]
+|===
+| Document | Purpose | Priority
+
+| `docs/contributing.adoc`
+| Contribution guidelines and code standards
+| P0
+
+| `docs/build-system.adoc`
+| Build system architecture and configuration
+| P1
+
+| `docs/testing-guide.adoc`
+| How to write and run tests
+| P1
+
+| `docs/debugging-guide.adoc`
+| Debugging techniques and tools
+| P1
+|===
+
+== 3. Reference Board Setup
+
+=== 3.1 Supported Boards
+
+[cols="2,2,2,1"]
+|===
+| Board | Vendor | RISC-V Core | Support Level
+
+| SiFive HiFive1 Rev B
+| SiFive
+| FE310-G002
+| Tier 1
+
+| Sipeed Longan Nano
+| Sipeed
+| GD32VF103
+| Tier 1
+
+| ESP32-C3
+| Espressif
+| RV32IMC
+| Tier 2
+
+| QEMU virt
+| Virtual
+| rv32/rv64
+| Tier 1 (Emulator)
+|===
+
+=== 3.2 Board Support Packages (BSP)
+
+[cols="2,3"]
+|===
+| Deliverable | Contents
+
+| `boards/hifive1-revb/`
+| Linker scripts, startup code, peripheral drivers
+
+| `boards/longan-nano/`
+| Board-specific HAL, flash configuration
+
+| `boards/esp32-c3/`
+| ESP-IDF integration, partition tables
+
+| `boards/qemu-virt/`
+| QEMU machine configuration, test harness
+|===
+
+=== 3.3 Hardware Configuration Files
+
+[cols="2,3,1"]
+|===
+| File | Purpose | Priority
+
+| `boards/<board>/openocd.cfg`
+| OpenOCD configuration for JTAG
+| P0
+
+| `boards/<board>/memory.x`
+| Linker memory layout
+| P0
+
+| `boards/<board>/svd/<name>.svd`
+| CMSIS-SVD peripheral definitions
+| P1
+
+| `boards/<board>/devicetree/<name>.dts`
+| Device tree source (where applicable)
+| P2
+|===
+
+== 4. Toolchain Components
+
+=== 4.1 Required Toolchain
+
+[cols="2,2,2"]
+|===
+| Component | Version | Source
+
+| RISC-V GNU Toolchain
+| 13.x+
+| riscv-collab/riscv-gnu-toolchain
+
+| OpenOCD
+| 0.12+
+| riscv-openocd fork
+
+| QEMU
+| 8.x+
+| qemu-riscv32/64
+
+| Rust (riscv targets)
+| stable
+| rustup target add
+|===
+
+=== 4.2 Toolchain Configuration Files
+
+[cols="2,3"]
+|===
+| File | Purpose
+
+| `rust-toolchain.toml`
+| Pin Rust version and RISC-V targets
+
+| `.cargo/config.toml`
+| Cargo build profiles, linker settings
+
+| `toolchain/toolchain.env`
+| Environment variables for toolchain paths
+|===
+
+== 5. SDK & Library Deliverables
+
+=== 5.1 Core Libraries (Rust)
+
+[cols="2,3,1"]
+|===
+| Crate | Purpose | Priority
+
+| `obli-riscv-hal`
+| Hardware abstraction layer
+| P0
+
+| `obli-riscv-rt`
+| Runtime/startup code
+| P0
+
+| `obli-riscv-pac`
+| Peripheral access crate (from SVD)
+| P0
+
+| `obli-riscv-bsp`
+| Board support package traits
+| P1
+|===
+
+=== 5.2 ReScript Bindings
+
+[cols="2,3,1"]
+|===
+| Package | Purpose | Priority
+
+| `rescript-riscv-hal`
+| ReScript bindings to HAL (via WASM)
+| P1
+
+| `rescript-riscv-sim`
+| Simulator interface for testing
+| P2
+|===
+
+=== 5.3 Deno Integration
+
+[cols="2,3,1"]
+|===
+| Module | Purpose | Priority
+
+| `deno/flash.ts`
+| Deno-based flash utility
+| P2
+
+| `deno/monitor.ts`
+| Serial monitor in Deno
+| P2
+
+| `deno/test-runner.ts`
+| Test orchestration
+| P2
+|===
+
+== 6. Package Management
+
+=== 6.1 Guix (Primary)
+
+[cols="2,3,1"]
+|===
+| File | Purpose | Priority
+
+| `guix.scm`
+| Guix package definition
+| P0
+
+| `channels.scm`
+| Guix channel configuration
+| P1
+
+| `manifest.scm`
+| Development environment manifest
+| P0
+|===
+
+=== 6.2 Nix (Fallback)
+
+[cols="2,3,1"]
+|===
+| File | Purpose | Priority
+
+| `flake.nix`
+| Nix flake definition
+| P1
+
+| `flake.lock`
+| Pinned dependencies
+| P1
+
+| `shell.nix`
+| Legacy Nix shell support
+| P2
+|===
+
+=== 6.3 Deno Configuration
+
+[cols="2,3,1"]
+|===
+| File | Purpose | Priority
+
+| `deno.json`
+| Deno configuration and import map
+| P1
+
+| `deno.lock`
+| Pinned Deno dependencies
+| P1
+|===
+
+== 7. CI/CD Deliverables
+
+=== 7.1 Additional Workflows
+
+[cols="2,3,1"]
+|===
+| Workflow | Purpose | Priority
+
+| `.github/workflows/build-test.yml`
+| Build and test on PR/push
+| P0
+
+| `.github/workflows/release.yml`
+| Automated releases with artifacts
+| P1
+
+| `.github/workflows/docs.yml`
+| Build and deploy documentation
+| P1
+|===
+
+== 8. Acceptance Criteria
+
+=== 8.1 Minimum Viable Product (MVP)
+
+The following must be complete for initial release:
+
+* [ ] At least one Tier 1 board fully supported
+* [ ] QEMU emulator support for testing
+* [ ] Basic HAL with GPIO, UART, Timer
+* [ ] Build, flash, and debug scripts working
+* [ ] Getting started documentation
+* [ ] `guix.scm` package definition
+* [ ] All P0 items from each category
+
+=== 8.2 Quality Gates
+
+[cols="2,3"]
+|===
+| Gate | Requirement
+
+| Build
+| Clean build with no warnings (`-Werror`)
+
+| Tests
+| 80%+ code coverage, all tests passing
+
+| Documentation
+| All public APIs documented
+
+| Security
+| No known vulnerabilities, SHA-pinned deps
+
+| Linting
+| Zero clippy warnings, formatted code
+|===
+
+== 9. Delivery Phases
+
+=== Phase 2A: Specification (Current)
+
+* [ ] Finalize architecture document
+* [ ] Select initial target board(s)
+* [ ] Define HAL API surface
+* [ ] Create memory map documentation
+
+=== Phase 2B: Core Implementation
+
+* [ ] Implement `obli-riscv-rt` (runtime)
+* [ ] Implement `obli-riscv-hal` (basic peripherals)
+* [ ] QEMU bring-up verified
+* [ ] Basic build scripts
+
+=== Phase 2C: Board Bring-Up
+
+* [ ] First hardware board boots
+* [ ] Flash/debug scripts working
+* [ ] Smoke test passing
+* [ ] BSP for primary board
+
+=== Phase 3: Full Implementation
+
+* [ ] All Tier 1 boards supported
+* [ ] Complete HAL
+* [ ] ReScript bindings
+* [ ] Full documentation
+
+== See Also
+
+* link:docs/BRINGUP.adoc[Board Bring-Up Checklist]
+* link:ROADMAP.adoc[Project Roadmap]
+* link:README.adoc[Project README]

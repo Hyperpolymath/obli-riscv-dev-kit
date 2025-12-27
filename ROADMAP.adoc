@@ -95,6 +95,20 @@
 No fixed timeline. Milestones will be updated as specification materials are uploaded and development begins.
 ====
 
+== Deliverables
+
+For a complete breakdown of all project deliverables, see link:DELIVERABLES.adoc[Deliverables Definition].
+
+Key deliverable categories:
+
+* **Scripts** — Build, flash, debug, and test automation
+* **Documentation** — User guides, API reference, architecture docs
+* **Board Support** — BSPs, linker scripts, OpenOCD configs
+* **SDK Libraries** — HAL, PAC, runtime crates (Rust)
+* **Package Definitions** — guix.scm, flake.nix, deno.json
+
+For hardware bring-up procedures, see link:docs/BRINGUP.adoc[Board Bring-Up Checklist].
+
 == Contributing
 
 See link:README.adoc[README] for contribution guidelines and language policy requirements.
