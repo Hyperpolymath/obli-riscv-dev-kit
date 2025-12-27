@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+# Pinned Rust toolchain for reproducible builds
+# Update channel date to upgrade toolchain (run `rustup update` after)
+
+[toolchain]
+channel = "1.83.0"
+components = ["rustfmt", "clippy", "llvm-tools", "rust-src"]
+targets = [
+    # RV32 targets
+    "riscv32i-unknown-none-elf",
+    "riscv32im-unknown-none-elf",
+    "riscv32imc-unknown-none-elf",
+    "riscv32imac-unknown-none-elf",
+    # RV64 targets
+    "riscv64gc-unknown-none-elf",
+    "riscv64imac-unknown-none-elf",
+    # WASM
+    "wasm32-unknown-unknown",
+]
+profile = "default"

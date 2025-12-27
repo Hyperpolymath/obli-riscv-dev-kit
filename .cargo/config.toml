@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+# Cargo configuration for RISC-V cross-compilation
+# See: https://doc.rust-lang.org/cargo/reference/config.html
+
+[build]
+# Default target (override with --target or per-crate config)
+# target = "riscv32imac-unknown-none-elf"
+
+[target.riscv32i-unknown-none-elf]
+runner = "qemu-system-riscv32 -machine virt -nographic -semihosting-config enable=on,target=native -kernel"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.riscv32im-unknown-none-elf]
+runner = "qemu-system-riscv32 -machine virt -nographic -semihosting-config enable=on,target=native -kernel"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.riscv32imc-unknown-none-elf]
+runner = "qemu-system-riscv32 -machine virt -nographic -semihosting-config enable=on,target=native -kernel"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.riscv32imac-unknown-none-elf]
+runner = "qemu-system-riscv32 -machine virt -nographic -semihosting-config enable=on,target=native -kernel"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.riscv64gc-unknown-none-elf]
+runner = "qemu-system-riscv64 -machine virt -nographic -semihosting-config enable=on,target=native -kernel"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.riscv64imac-unknown-none-elf]
+runner = "qemu-system-riscv64 -machine virt -nographic -semihosting-config enable=on,target=native -kernel"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.'cfg(all(target_arch = "riscv32", target_os = "none"))']
+rustflags = [
+    "-C", "link-arg=-Tlink.x",
+    "-C", "force-frame-pointers=yes",
+]
+
+[target.'cfg(all(target_arch = "riscv64", target_os = "none"))']
+rustflags = [
+    "-C", "link-arg=-Tlink.x",
+    "-C", "force-frame-pointers=yes",
+]
+
+# Optimize for size in release builds (embedded)
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+debug = false
+panic = "abort"
+
+# Release with debug info
+[profile.release-with-debug]
+inherits = "release"
+debug = true
+
+# Development profile optimizations
+[profile.dev]
+opt-level = 1
+debug = true
+panic = "abort"
+
+[alias]
+# Convenient aliases for RISC-V development
+rv32 = "build --target riscv32imac-unknown-none-elf"
+rv64 = "build --target riscv64gc-unknown-none-elf"

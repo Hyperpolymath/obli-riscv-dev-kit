@@ -249,43 +249,131 @@ This document defines the complete set of deliverables for the obli-riscv-dev-ki
 
 == 4. Toolchain Components
 
-=== 4.1 Required Toolchain
+=== 4.1 Pinned Toolchain Versions
+
+[IMPORTANT]
+====
+All toolchain versions are pinned for reproducible builds.
+See `toolchain/versions.env` for exact versions and SHA256 checksums.
+====
 
 [cols="2,2,2"]
 |===
-| Component | Version | Source
+| Component | Pinned Version | Source
+
+| Rust
+| 1.83.0
+| `rust-toolchain.toml`
 
 | RISC-V GNU Toolchain
-| 13.x+
+| 2024.09.03
 | riscv-collab/riscv-gnu-toolchain
 
 | OpenOCD
-| 0.12+
-| riscv-openocd fork
+| 0.12.0
+| riscv-openocd fork (pinned commit)
 
 | QEMU
-| 8.x+
-| qemu-riscv32/64
+| 9.1.1
+| qemu.org (SHA256 verified)
 
-| Rust (riscv targets)
-| stable
-| rustup target add
+| Deno
+| 2.1.4
+| deno.land (SHA256 verified)
+
+| Just
+| 1.38.0
+| github.com/casey/just
 |===
 
 === 4.2 Toolchain Configuration Files
 
-[cols="2,3"]
+[cols="2,3,1"]
 |===
-| File | Purpose
+| File | Purpose | Status
 
 | `rust-toolchain.toml`
-| Pin Rust version and RISC-V targets
+| Pin Rust version, components, and RISC-V targets
+| ✅ Created
 
 | `.cargo/config.toml`
-| Cargo build profiles, linker settings
+| Cargo build profiles, linker settings, target runners
+| ✅ Created
 
-| `toolchain/toolchain.env`
-| Environment variables for toolchain paths
+| `toolchain/versions.env`
+| Pinned versions with SHA256 checksums
+| ✅ Created
+
+| `manifest.scm`
+| Guix development environment manifest
+| ✅ Created
+
+| `channels.scm`
+| Pinned Guix channels for time-machine builds
+| ✅ Created
+|===
+
+=== 4.3 Reproducible Build Strategy
+
+==== Guix (Primary)
+
+[source,bash]
+----
+# Fully reproducible environment with pinned channels
+guix time-machine -C channels.scm -- shell -m manifest.scm
+
+# Build with bit-for-bit reproducibility
+guix time-machine -C channels.scm -- build -f guix.scm
+----
+
+==== Rust Toolchain
+
+[source,bash]
+----
+# Automatically uses rust-toolchain.toml
+cargo build --release --target riscv32imac-unknown-none-elf
+
+# Verify pinned version
+rustc --version  # Should match rust-toolchain.toml
+----
+
+==== Verification
+
+[source,bash]
+----
+# Source version definitions
+source toolchain/versions.env
+
+# Verify all tools match pinned versions
+scripts/deps-check.sh
+----
+
+=== 4.4 RISC-V Targets
+
+[cols="2,3"]
+|===
+| Target Triple | Description
+
+| `riscv32i-unknown-none-elf`
+| RV32I base (no extensions)
+
+| `riscv32im-unknown-none-elf`
+| RV32I + M (integer multiply/divide)
+
+| `riscv32imc-unknown-none-elf`
+| RV32I + M + C (compressed)
+
+| `riscv32imac-unknown-none-elf`
+| RV32I + M + A (atomics) + C
+
+| `riscv64gc-unknown-none-elf`
+| RV64 general-purpose (IMAFDC)
+
+| `riscv64imac-unknown-none-elf`
+| RV64I + M + A + C
+
+| `wasm32-unknown-unknown`
+| WebAssembly (for ReScript integration)
 |===
 
 == 5. SDK & Library Deliverables
