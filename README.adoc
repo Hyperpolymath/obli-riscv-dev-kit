@@ -2,7 +2,7 @@ image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0,link="https:
 image:https://img.shields.io/badge/Philosophy-Palimpsest-purple.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-licence"]
 
 
-// SPDX-License-Identifier: PMPL-1.0 OR AGPL-3.0-or-later
+// SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
 // SPDX-FileCopyrightText: 2024-2025 hyperpolymath
 
 = obli-riscv-dev-kit
@@ -56,7 +56,7 @@ This repository contains project infrastructure and policy enforcement but no su
 
 * ✅ Repository infrastructure (CI/CD, issue templates, editor config)
 * ✅ Policy enforcement workflows (RSR anti-pattern, security, Guix/Nix)
-* ✅ Dual license (MIT OR AGPL-3.0-or-later)
+* ✅ Dual license (MIT OR PMPL-1.0-or-later)
 * ✅ Citation infrastructure
 * ⏳ Core implementation — _pending_
 * ⏳ Documentation — _pending_
@@ -87,7 +87,7 @@ just
 Dual-licensed under your choice of:
 
 * link:https://opensource.org/licenses/MIT[Palimpsest-MPL-1.0 License]
-* link:https://www.gnu.org/licenses/agpl-3.0.html[AGPL-3.0-or-later]
+* link:https://github.com/hyperpolymath/palimpsest-license.html[PMPL-1.0-or-later]
 
 See link:LICENSE.txt[LICENSE.txt] for full terms.
 
